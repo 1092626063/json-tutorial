@@ -14,8 +14,8 @@ enum {
     LEPT_PARSE_ROOT_NOT_SINGULAR
 };
 
-int lept_parse(lept_value* v, const char* json);
+int lept_parse(lept_value* v, const char* json); //解析 JSON , 判断输入的json是何种类型v，以及返回相应的错误类型. 不应该改动这个输入字符串，所以使用 const char* 类型
 
-lept_type lept_get_type(const lept_value* v);
+lept_type lept_get_type(const lept_value* v); //获取其类型
 
 #endif /* LEPTJSON_H__ */

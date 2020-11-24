@@ -8,7 +8,7 @@ typedef struct {
     const char* json;
 }lept_context;
 
-static void lept_parse_whitespace(lept_context* c) {
+static void lept_parse_whitespace(lept_context* c) { //删除首部的空格、制表符等, 定位到字符串的第一个有效字符
     const char *p = c->json;
     while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
         p++;
@@ -26,8 +26,8 @@ static int lept_parse_null(lept_context* c, lept_value* v) {
 
 static int lept_parse_value(lept_context* c, lept_value* v) {
     switch (*c->json) {
-        case 'n':  return lept_parse_null(c, v);
-        case '\0': return LEPT_PARSE_EXPECT_VALUE;
+        case 'n':  return lept_parse_null(c, v);    //处理null
+        case '\0': return LEPT_PARSE_EXPECT_VALUE; //字符串结尾
         default:   return LEPT_PARSE_INVALID_VALUE;
     }
 }
@@ -36,7 +36,7 @@ int lept_parse(lept_value* v, const char* json) {
     lept_context c;
     assert(v != NULL);
     c.json = json;
-    v->type = LEPT_NULL;
+    v->type = LEPT_NULL; //预定义为null类型
     lept_parse_whitespace(&c);
     return lept_parse_value(&c, v);
 }
