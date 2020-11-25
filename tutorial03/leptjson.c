@@ -23,15 +23,15 @@ typedef struct {
 static void* lept_context_push(lept_context* c, size_t size) {
     void* ret;
     assert(size > 0);
-    if (c->top + size >= c->size) {
+    if (c->top + size >= c->size) { 
         if (c->size == 0)
             c->size = LEPT_PARSE_STACK_INIT_SIZE;
         while (c->top + size >= c->size)
-            c->size += c->size >> 1;  /* c->size * 1.5 */
+            c->size += c->size >> 1;  /* c->size * 1.5 */   //这里开1.5倍是有原因的....
         c->stack = (char*)realloc(c->stack, c->size);
     }
-    ret = c->stack + c->top;
-    c->top += size;
+    ret = c->stack + c->top;    //因为可能存在新开辟空间的情况，所以返回当前的top的位置
+    c->top += size;                     //因为当前要加入一个size大小的字符，所以top向上移动
     return ret;
 }
 
@@ -89,21 +89,21 @@ static int lept_parse_number(lept_context* c, lept_value* v) {
 static int lept_parse_string(lept_context* c, lept_value* v) {
     size_t head = c->top, len;
     const char* p;
-    EXPECT(c, '\"');
+    EXPECT(c, '\"');    //拿掉string的第一个'\"'
     p = c->json;
     for (;;) {
         char ch = *p++;
         switch (ch) {
             case '\"':
                 len = c->top - head;
-                lept_set_string(v, (const char*)lept_context_pop(c, len), len);
+                lept_set_string(v, (const char*)lept_context_pop(c, len), len);     //将当前长度的string解析后存入v中
                 c->json = p;
                 return LEPT_PARSE_OK;
             case '\0':
-                c->top = head;
+                c->top = head;  //非法，还原为初始位置
                 return LEPT_PARSE_MISS_QUOTATION_MARK;
             default:
-                PUTC(c, ch);
+                PUTC(c, ch);    //默认情况下将 ch 加入c.
         }
     }
 }
