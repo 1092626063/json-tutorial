@@ -207,7 +207,7 @@ static int lept_parse_array(lept_context* c, lept_value* v) {
             c->json++;
             v->type = LEPT_ARRAY;
             v->u.a.size = size;
-            size *= sizeof(lept_value);
+            size *= sizeof(lept_value); //这里有个问题，json格式的数据每一个object大小都不一样的呀？
             memcpy(v->u.a.e = (lept_value*)malloc(size), lept_context_pop(c, size), size);
             return LEPT_PARSE_OK;
         }

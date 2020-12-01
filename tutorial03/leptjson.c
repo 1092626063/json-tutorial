@@ -30,14 +30,14 @@ static void* lept_context_push(lept_context* c, size_t size) {
             c->size += c->size >> 1;  /* c->size * 1.5 */   //这里开1.5倍是有原因的....
         c->stack = (char*)realloc(c->stack, c->size);
     }
-    ret = c->stack + c->top;    //因为可能存在新开辟空间的情况，所以返回当前的top的位置
+    ret = c->stack + c->top;    //因为可能存在新开辟空间的情况，所以返回当前的top的位置！！！
     c->top += size;                     //因为当前要加入一个size大小的字符，所以top向上移动
     return ret;
 }
 
 static void* lept_context_pop(lept_context* c, size_t size) {
     assert(c->top >= size);
-    return c->stack + (c->top -= size);
+    return c->stack + (c->top -= size);//返回pop掉的字符
 }
 
 static void lept_parse_whitespace(lept_context* c) {
@@ -182,8 +182,8 @@ size_t lept_get_string_length(const lept_value* v) {
 
 void lept_set_string(lept_value* v, const char* s, size_t len) {
     assert(v != NULL && (s != NULL || len == 0));
-    lept_free(v);
-    v->u.s.s = (char*)malloc(len + 1);
+    lept_free(v);//先释放内存
+    v->u.s.s = (char*)malloc(len + 1);//再重新分配内存
     memcpy(v->u.s.s, s, len);
     v->u.s.s[len] = '\0';
     v->u.s.len = len;
