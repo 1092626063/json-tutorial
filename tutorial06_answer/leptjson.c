@@ -260,7 +260,7 @@ static int lept_parse_object(lept_context* c, lept_value* v) {
         }
         if ((ret = lept_parse_string_raw(c, &str, &m.klen)) != LEPT_PARSE_OK)
             break;
-        memcpy(m.k = (char*)malloc(m.klen + 1), str, m.klen);
+        memcpy(m.k = (char*)malloc(m.klen + 1), str, m.klen); //add key
         m.k[m.klen] = '\0';
         /* parse ws colon ws */
         lept_parse_whitespace(c);
@@ -270,7 +270,7 @@ static int lept_parse_object(lept_context* c, lept_value* v) {
         }
         c->json++;
         lept_parse_whitespace(c);
-        /* parse value */
+        /* parse value and add value */
         if ((ret = lept_parse_value(c, &m.v)) != LEPT_PARSE_OK)
             break;
         memcpy(lept_context_push(c, sizeof(lept_member)), &m, sizeof(lept_member));
